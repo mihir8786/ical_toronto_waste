@@ -19,7 +19,7 @@ ICS_OUT_PATH = CALENDAR_OUTPUT_DIR + ICS_OUTPUT_DIR
 
 SCHEDULES_FILE_REGEX = 'schedules/pickup-schedule-*.csv'
 
-INPUT_DATE_FORMAT = '%Y-%m-%d'
+INPUT_DATE_FORMATS = ['%d-%m-%Y', '%Y-%m-%d']  # Multiple possible date formats
 CSV_DATE_FORMAT = '%m-%d-%y'
 ICS_DATE_FORMAT = '%Y%m%d'
 ICS_DATETIME_FORMAT = '%Y%m%dT%H%M%S'
@@ -58,8 +58,7 @@ def write_csv(data):
         pickups = data[calendar]
         logging.info('Writing %s CSV', calendar)
 
-        with open(f'{CSV_OUT_PATH}{calendar}.csv', 'w') as csv_file:
-
+        with open(f'{CSV_OUT_PATH}{calendar}.csv', 'w', newline='', encoding='utf-8') as csv_file:
             csv_writer = csv.writer(csv_file)
             csv_writer.writerow(
                 ["Subject", "Start Date", "All Day Event", "Description"])
@@ -84,7 +83,7 @@ def write_ics(data):
 
         logging.info('Writing %s ICS', calendar)
 
-        with open(f'{ICS_OUT_PATH}{calendar}.ics', 'w') as ics_file:
+        with open(f'{ICS_OUT_PATH}{calendar}.ics', 'w', encoding='utf-8') as ics_file:
             ics_file.write('BEGIN:VCALENDAR\r\n')
             ics_file.write('VERSION:2.0\r\n')
             ics_file.write('CALSCALE:GREGORIAN\r\n')
@@ -126,11 +125,24 @@ URL_GARBAGE = ('https://www.toronto.ca/services-payments/recycling-organics-garb
 URL_RECYCLING = 'https://www.toronto.ca/services-payments/recycling-organics-garbage/waste-wizard/'
 
 
+def parse_date(date_str):
+    """
+    Attempts to parse a date string in multiple formats.
+    Returns a datetime object if successful, raises ValueError if not.
+    """
+    for date_format in INPUT_DATE_FORMATS:
+        try:
+            return datetime.strptime(date_str, date_format)
+        except ValueError:
+            continue
+    raise ValueError(f"Date {date_str} does not match any known format.")
+
+
 class Pickup:
     def __init__(self, row):
         [_, self.calendar, day, green_bin, garbage,
             recycling, yard_waste, christmas_tree] = row
-        self.day = datetime.strptime(day, INPUT_DATE_FORMAT)
+        self.day = parse_date(day)  # Use the flexible date parser
         self.green_bin = green_bin != '0'
         self.garbage = garbage != '0'
         self.recycling = recycling != '0'
