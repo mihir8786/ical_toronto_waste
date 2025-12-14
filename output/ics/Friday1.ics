@@ -1391,15 +1391,7 @@ UID:20251212Friday1
 DESCRIPTION:Recycling/Green Bin
 TRANSP:TRANSPARENT
 END:VEVENT
-BEGIN:VEVENT
-URL;VALUE=URI:https://www.toronto.ca/services-payments/recycling-organics-garbage/houses/what-goes-in-my-green-bin/
-SUMMARY:🗑 Garbage Day
-DTSTART;VALUE=DATE:20251219
-DTSTAMP;VALUE=DATETIME:20250111T210051
-UID:20251219Friday1
-DESCRIPTION:Garbage/Green Bin
-TRANSP:TRANSPARENT
-END:VEVENT
+
 BEGIN:VEVENT
 URL;VALUE=URI:https://www.toronto.ca/services-payments/recycling-organics-garbage/waste-wizard/
 SUMMARY:♻️ Recycling Day
@@ -2302,4 +2294,5 @@ TRANSP:TRANSPARENT
 END:VEVENT
 
 END:VCALENDAR
+
 
